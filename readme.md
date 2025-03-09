@@ -61,7 +61,7 @@ Buka browser dan akses **http://localhost:8501** untuk melihat dashboard.
 ---
 
 ## 📝 Author
-Project ini dikembangkan oleh **Muhammad Khadafi Riyadi**. Jika ada pertanyaan, silakan hubungi melalui [email kamu] atau melalui repository ini.
+Project ini dikembangkan oleh **Muhammad Khadafi Riyadi**. Jika ada pertanyaan, silakan hubungi melalui Muhkhadafi2309@gmail.com atau melalui repository ini.
 
 ---
 
