@@ -37,4 +37,22 @@ ax.set_xlabel("Hari (0: Minggu, 6: Sabtu)")
 ax.set_ylabel("Jam")
 st.pyplot(fig)
 
-st.write("Dashboard ini membantu memahami tren penyewaan sepeda berdasarkan cuaca dan waktu!")
+# Menambahkan penjelasan tentang data
+st.write("""
+Dashboard ini berfungsi untuk mengeksplorasi data penyewaan sepeda berdasarkan dua faktor utama: kondisi cuaca dan waktu.
+
+1. **Kondisi Cuaca**:
+   - Visualisasi pertama menunjukkan pengaruh kondisi cuaca terhadap jumlah penyewaan sepeda.
+   - Data cuaca diambil dari kolom `weathersit`, yang mencakup kategori seperti cerah, mendung, atau hujan.
+   - Sumbu x menunjukkan kondisi cuaca, sedangkan sumbu y menunjukkan jumlah penyewaan sepeda (`cnt`).
+
+2. **Jenis Pengguna**:
+   - Terdapat fitur interaktif untuk memilih jenis pengguna: "Total", "Casual", atau "Registered".
+
+3. **Pola Penyewaan Berdasarkan Waktu**:
+   - Visualisasi kedua menggunakan heatmap untuk menunjukkan pola penyewaan berdasarkan jam dan hari.
+   - Data diambil dari dataset `hour_df`, yang mencakup informasi tentang jumlah penyewaan berdasarkan jam (`hr`) dan hari (`weekday`).
+
+4. **Kesimpulan**:
+   - Dashboard ini membantu memahami tren penyewaan sepeda berdasarkan cuaca dan waktu.
+""")
