@@ -3,56 +3,82 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Load dataset
-day_df = pd.read_csv("dashboard/day_data.csv")
-hour_df = pd.read_csv("dashboard/hour_data.csv")
+# Load data
+@st.cache_data
+def load_data():
+    hour_df = pd.read_csv("hour_data.csv")
+    day_df = pd.read_csv("day_data.csv")
+    return hour_df, day_df
 
-# Sidebar
-st.sidebar.header("Dashboard Penyewaan Sepeda")
-st.sidebar.write("Eksplorasi Data Penyewaan Sepeda Berdasarkan Cuaca dan Waktu")
+hour_df, day_df = load_data()
 
-# Visualisasi 1: Pengaruh Cuaca terhadap Penyewaan Sepeda
-st.subheader("Pengaruh Kondisi Cuaca terhadap Penyewaan Sepeda")
-fig, ax = plt.subplots(figsize=(8, 5))
-sns.boxplot(x=day_df["weathersit"], y=day_df["cnt"], ax=ax)
-ax.set_xlabel("Kondisi Cuaca")
-ax.set_ylabel("Jumlah Penyewaan")
-st.pyplot(fig)
+# Mapping musim
+season_mapping = {
+    1: "Musim Semi",
+    2: "Musim Panas",
+    3: "Musim Gugur",
+    4: "Musim Dingin"
+}
 
-# Fitur Interaktif: Dropdown untuk memilih jenis pengguna
-user_type = st.selectbox("Pilih Jenis Pengguna:", ["Total", "Casual", "Registered"])
+day_df["season_label"] = day_df["season"].map(season_mapping)
 
-# Visualisasi 2: Pola Penyewaan Sepeda Berdasarkan Waktu
-st.subheader("Pola Penyewaan Sepeda Berdasarkan Jam dan Hari")
+# Sidebar filters
+st.sidebar.header("Filter Data")
+
+# Filter berdasarkan tanggal
+day_df['dteday'] = pd.to_datetime(day_df['dteday'])
+start_date = st.sidebar.date_input("Pilih tanggal mulai:", day_df['dteday'].min())
+end_date = st.sidebar.date_input("Pilih tanggal akhir:", day_df['dteday'].max())
+
+day_filtered = day_df[(day_df['dteday'] >= pd.to_datetime(start_date)) & (day_df['dteday'] <= pd.to_datetime(end_date))]
+
+# Filter berdasarkan musim (season)
+selected_season_labels = st.sidebar.multiselect(
+    "Pilih Musim:",
+    options=day_df["season_label"].unique(),
+    default=day_df["season_label"].unique()
+)
+
+day_filtered = day_filtered[day_filtered["season_label"].isin(selected_season_labels)]
+
+# Title
+st.title("Dashboard Penyewaan Sepeda")
+
+# Visualisasi 1: Rata-rata penyewaan berdasarkan jam
+hourly_stats = hour_df.groupby('hr').agg({
+    'cnt': 'mean'
+}).reset_index()
+
+st.subheader("Rata-rata Penyewaan Sepeda berdasarkan Jam")
 fig, ax = plt.subplots(figsize=(10, 5))
-
-if user_type == "Total":
-    sns.heatmap(hour_df.pivot_table(values='cnt', index='hr', columns='weekday', aggfunc='mean'), cmap='coolwarm', ax=ax)
-elif user_type == "Casual":
-    sns.heatmap(hour_df.pivot_table(values='casual', index='hr', columns='weekday', aggfunc='mean'), cmap='coolwarm', ax=ax)
-elif user_type == "Registered":
-    sns.heatmap(hour_df.pivot_table(values='registered', index='hr', columns='weekday', aggfunc='mean'), cmap='coolwarm', ax=ax)
-
-ax.set_xlabel("Hari (0: Minggu, 6: Sabtu)")
-ax.set_ylabel("Jam")
+ax.plot(hourly_stats['hr'], hourly_stats['cnt'], marker='o', color='b')
+ax.set_xlabel("Jam")
+ax.set_ylabel("Rata-rata Penyewaan")
+ax.set_title("Penyewaan Sepeda per Jam")
+ax.grid()
 st.pyplot(fig)
 
-# Menambahkan penjelasan tentang data
-st.write("""
-Dashboard ini berfungsi untuk mengeksplorasi data penyewaan sepeda berdasarkan dua faktor utama: kondisi cuaca dan waktu.
+# Visualisasi 2: Rata-rata penyewaan berdasarkan musim
+season_stats = day_filtered.groupby('season_label').agg({
+    'cnt': 'mean'
+}).reset_index()
 
-1. **Kondisi Cuaca**:
-   - Visualisasi pertama menunjukkan pengaruh kondisi cuaca terhadap jumlah penyewaan sepeda.
-   - Data cuaca diambil dari kolom `weathersit`, yang mencakup kategori seperti cerah, mendung, atau hujan.
-   - Sumbu x menunjukkan kondisi cuaca, sedangkan sumbu y menunjukkan jumlah penyewaan sepeda (`cnt`).
+st.subheader("Rata-rata Penyewaan Sepeda berdasarkan Musim")
+fig, ax = plt.subplots(figsize=(8, 5))
+sns.barplot(x='season_label', y='cnt', data=season_stats, ax=ax, palette='viridis')
+ax.set_xlabel("Musim")
+ax.set_ylabel("Rata-rata Penyewaan")
+ax.set_title("Pengaruh Musim terhadap Penyewaan Sepeda")
+st.pyplot(fig)
 
-2. **Jenis Pengguna**:
-   - Terdapat fitur interaktif untuk memilih jenis pengguna: "Total", "Casual", atau "Registered".
+# Visualisasi 3: Heatmap pola penyewaan berdasarkan jam dan hari
+hour_weekday_data = hour_df.groupby(['hr', 'weekday'])['cnt'].mean().reset_index()
+hour_weekday_pivot = hour_weekday_data.pivot(index='hr', columns='weekday', values='cnt')
 
-3. **Pola Penyewaan Berdasarkan Waktu**:
-   - Visualisasi kedua menggunakan heatmap untuk menunjukkan pola penyewaan berdasarkan jam dan hari.
-   - Data diambil dari dataset `hour_df`, yang mencakup informasi tentang jumlah penyewaan berdasarkan jam (`hr`) dan hari (`weekday`).
-
-4. **Kesimpulan**:
-   - Dashboard ini membantu memahami tren penyewaan sepeda berdasarkan cuaca dan waktu.
-""")
+st.subheader("Heatmap Penyewaan Sepeda berdasarkan Jam dan Hari")
+fig, ax = plt.subplots(figsize=(10, 6))
+sns.heatmap(hour_weekday_pivot, cmap='viridis', annot=False, linewidths=0.5, ax=ax)
+ax.set_xlabel("Hari (0=Minggu, 6=Sabtu)")
+ax.set_ylabel("Jam")
+ax.set_title("Pola Penyewaan Sepeda")
+st.pyplot(fig)
