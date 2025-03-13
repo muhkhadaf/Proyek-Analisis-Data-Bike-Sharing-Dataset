@@ -1,73 +1,60 @@
-# Bike Sharing Data Analysis Dashboard
+# Cara Menjalankan Dashboard Streamlit Secara Lokal
 
-## 📌 Project Overview
-Dashboard ini dikembangkan menggunakan **Streamlit** untuk menganalisis dan memvisualisasikan data penyewaan sepeda berdasarkan berbagai faktor seperti kondisi cuaca, waktu, dan hari dalam seminggu.
+Dashboard ini digunakan untuk menganalisis data penyewaan sepeda dengan visualisasi interaktif menggunakan Streamlit.
 
----
+## Prasyarat
+Sebelum menjalankan dashboard, pastikan Anda sudah menginstal beberapa dependensi berikut:
 
-## 🛠️ Installation Guide
-### 1️⃣ Clone Repository
-Jika proyek ini berada dalam repository GitHub, clone menggunakan perintah berikut:
+1. Python (versi 3.7 atau lebih baru)
+2. Paket-paket Python yang dibutuhkan:
+   - `streamlit`
+   - `pandas`
+   - `matplotlib`
+   - `seaborn`
+
+## Langkah-langkah Menjalankan Dashboard
+
+### 1. Clone atau Download Repository
+Anda bisa mengunduhnya atau melakukan clone dengan perintah berikut:
 ```bash
 git clone https://github.com/muhkhadaf/Proyek-Analisis-Data-Bike-Sharing-Dataset.git
-cd Proyek-Analisis-Data-Khadafi
+cd Proyek-Analisis-Data-Bike-Sharing-Dataset
 ```
-Jika proyek sudah berada dalam folder lokal, langsung lanjut ke langkah berikutnya.
 
-### 2️⃣ Buat Virtual Environment *(Opsional, tetapi Disarankan)*
+### 2. Buat dan Aktifkan Virtual Environment (Opsional tapi Disarankan)
 ```bash
-python -m venv venv  # Buat virtual environment
-source venv/bin/activate  # Aktifkan di Mac/Linux
-venv\Scripts\activate  # Aktifkan di Windows
+python -m venv env
+source env/bin/activate  # Untuk macOS/Linux
+env\Scripts\activate     # Untuk Windows
 ```
 
-### 3️⃣ Install Dependencies
+### 3. Install Dependensi
 ```bash
 pip install -r requirements.txt
 ```
-
-Jika `requirements.txt` belum ada, bisa dibuat dengan:
+Jika tidak ada file `requirements.txt`, Anda bisa menginstal paket secara manual:
 ```bash
-pipreqs . --force
+pip install streamlit pandas matplotlib seaborn
 ```
 
----
-
-## 🚀 How to Run the Dashboard
-### 1️⃣ Jalankan Streamlit
+### 4. Jalankan Dashboard
 ```bash
-streamlit run app.py
-```
-Jika terjadi error **'streamlit' is not recognized**, pastikan Streamlit sudah terinstall:
-```bash
-pip install streamlit
+streamlit run dashboard.py
 ```
 
-### 2️⃣ Akses Dashboard
-Setelah dijalankan, akan muncul URL seperti:
-```bash
-Local URL: http://localhost:8501
-Network URL: http://192.168.xx.xx:8501
+### 5. Akses Dashboard
+Setelah menjalankan perintah di atas, dashboard akan terbuka di browser dengan alamat berikut:
 ```
-Buka browser dan akses **http://localhost:8501** untuk melihat dashboard.
+http://localhost:8501
+```
 
----
+## Catatan Tambahan
+- Pastikan file dataset (`hour_data.csv` dan `day_data.csv`) tersedia di direktori yang benar.
+- Jika ada perubahan pada kode, Anda bisa menghentikan proses (Ctrl + C) dan menjalankan ulang perintah `streamlit run dashboard.py`.
+- Untuk keluar dari virtual environment, jalankan:
+  ```bash
+  deactivate
+  ```
 
-## 🎨 Dashboard Features
-✅ **Visualisasi Data:** Menampilkan analisis penyewaan sepeda berdasarkan faktor cuaca, waktu, dan hari.
-✅ **Interaktif:** Memungkinkan pengguna memilih parameter tertentu untuk eksplorasi data lebih lanjut.
-✅ **Insights & Kesimpulan:** Menyajikan temuan utama dari analisis data.
-
----
-
-## 📝 Author
-Project ini dikembangkan oleh **Muhammad Khadafi Riyadi**. Jika ada pertanyaan, silakan hubungi melalui Muhkhadafi2309@gmail.com atau melalui repository ini.
-
----
-
-## 📜 License
-Proyek ini menggunakan lisensi **MIT License**. Kamu bebas menggunakan dan mengembangkan proyek ini dengan memberikan atribusi yang sesuai.
-
----
-
+Selamat menggunakan dashboard! 🎉
 
