@@ -56,5 +56,4 @@ http://localhost:8501
   deactivate
   ```
 
-Selamat menggunakan dashboard! 🎉
 
